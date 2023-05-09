@@ -1,13 +1,3 @@
-# Sample Hardhat Project
+# Decentralized tokenomic
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
-
-Try running some of the following tasks:
-
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.ts
-```
+This project provides a smart contract for an account to create a token distribution plan over certain periods. Additionally, the smart contract provides an interface for claiming and querying the token distribution plan.
