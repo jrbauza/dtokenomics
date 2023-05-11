@@ -267,7 +267,7 @@ describe("TokenomicPayment", function () {
       await token.connect(tokenomicOwner).approve(tokenomicContract.address, 20);
       await tokenomicContract.connect(tokenomicOwner).create(tokenomic, authorizedAccounts);
 
-      await ethers.provider.send("evm_increaseTime", [days(1)]);
+      await time.increase(days(1));
       await tokenomicContract.connect(user1).claim(tokenomicOwner.getAddress());
 
       await expect(tokenomicContract.connect(user2).claim(tokenomicOwner.getAddress())).to.be.reverted;
@@ -316,7 +316,7 @@ describe("TokenomicPayment", function () {
       await token.connect(tokenomicOwner).approve(tokenomicContract.address, 10);
       await tokenomicContract.connect(tokenomicOwner).create(tokenomic, authorizedAccounts);
 
-      await ethers.provider.send("evm_increaseTime", [days(1)]);
+      await time.increase(days(1));
       await expect(tokenomicContract.connect(user2).claim(tokenomicOwner.getAddress())).to.be.revertedWith(
         "Tokenomic: account is not authorized"
       );
@@ -341,7 +341,7 @@ describe("TokenomicPayment", function () {
       await token.connect(tokenomicOwner).approve(tokenomicContract.address, 10);
       await tokenomicContract.connect(tokenomicOwner).create(tokenomic, authorizedAccounts);
 
-      await ethers.provider.send("evm_increaseTime", [days(1)]);
+      await time.increase(days(1));
       await tokenomicContract.connect(user1).claim(tokenomicOwner.getAddress());
 
       await expect(tokenomicContract.connect(user1).claim(tokenomicOwner.getAddress())).to.be.revertedWith(
@@ -370,8 +370,7 @@ describe("TokenomicPayment", function () {
       await token.connect(tokenomicOwner).approve(tokenomicContract.address, 20);
       await tokenomicContract.connect(tokenomicOwner).create(tokenomic, authorizedAccounts);
 
-      await ethers.provider.send("evm_increaseTime", [days(1)]);
-      await ethers.provider.send("evm_mine", []);
+      await time.increase(days(1));
       const user1BalanceBefore = await token.balanceOf(user1.getAddress());
       await tokenomicContract.connect(user1).claim(tokenomicOwner.getAddress());
       const user1BalanceAfter = await token.balanceOf(user1.getAddress());
@@ -398,7 +397,7 @@ describe("TokenomicPayment", function () {
 
       await tokenomicContract.connect(tokenomicOwner).pause();
 
-      await ethers.provider.send("evm_increaseTime", [days(1)]);
+      await time.increase(days(1));
       await expect(tokenomicContract.connect(user1).claim(tokenomicOwner.getAddress())).to.be.revertedWith(
         "Tokenomic: tokenomic is paused"
       );
@@ -427,12 +426,10 @@ describe("TokenomicPayment", function () {
       await token.connect(tokenomicOwner).approve(tokenomicContract.address, 30);
       await tokenomicContract.connect(tokenomicOwner).create(tokenomic, authorizedAccounts);
 
-      await ethers.provider.send("evm_increaseTime", [days(1)]);
-      await ethers.provider.send("evm_mine", []);
+      await time.increase(days(1));
       await tokenomicContract.connect(user1).claim(tokenomicOwner.getAddress());
       expect(await token.balanceOf(user1.getAddress())).to.equal(10);
-      await ethers.provider.send("evm_increaseTime", [days(3)]);
-      await ethers.provider.send("evm_mine", []);
+      await time.increase(days(3));
       await tokenomicContract.connect(user1).claim(tokenomicOwner.getAddress());
       expect(await token.balanceOf(user1.getAddress())).to.equal(20);
       await tokenomicContract.connect(user2).claim(tokenomicOwner.getAddress());
@@ -458,15 +455,14 @@ describe("TokenomicPayment", function () {
       await token.connect(tokenomicOwner).approve(tokenomicContract.address, 100);
       await tokenomicContract.connect(tokenomicOwner).create(tokenomic, authorizedAccounts);
 
-      await ethers.provider.send("evm_increaseTime", [days(1)]);
-      await ethers.provider.send("evm_mine", []);
+      await time.increase(days(1));
+
       await tokenomicContract.connect(user1).claim(tokenomicOwner.getAddress());
       expect(await token.balanceOf(user1.getAddress())).to.equal(10);
 
       await tokenomicContract.connect(tokenomicOwner).pause();
 
-      await ethers.provider.send("evm_increaseTime", [days(3)]);
-      await ethers.provider.send("evm_mine", []);
+      await time.increase(days(3));
       await expect(tokenomicContract.connect(user1).claim(tokenomicOwner.getAddress())).to.be.revertedWith(
         "Tokenomic: tokenomic is paused"
       );
@@ -478,7 +474,7 @@ describe("TokenomicPayment", function () {
 });
 
 function days(days: number): number {
-  return days * 24 * 60 * 60 * 1000;
+  return days * 24 * 60 * 60;
 }
 
 async function now():Promise<number> {
